@@ -93,6 +93,20 @@ class CLI
   # --- Option 3 - Add Event --- #
 
   def add_event_menu
+    add_event_get_attributes
+    if @event[:title].length > 0 && @event[:description].length > 0
+      add_event_from_input
+    else
+      new_line
+      puts "Sorry, that didn't quite work..."
+      wait_and_clear
+    end
+    @input = ""
+    @tags = []
+    @event = {}
+  end
+
+  def add_event_get_attributes
     @event = {}
     clear
     puts "Let's create an event! What would you like to title it?"
@@ -103,19 +117,14 @@ class CLI
     get_unaltered_input
     @event[:description] = @input
     new_line
+    add_event_get_tags
+  end
+
+  def add_event_get_tags
     puts "What tags would you like to include?"
     get_input
     @tags = @input.split(/[ ||, ]/).reject(&:empty?)
     new_line
-    if @event[:title].length > 0 && @event[:description].length > 0
-      add_event_from_input
-    else
-      new_line
-      puts "Sorry, that didn't quite work..."
-      wait_and_clear
-    end
-    @input = ""
-    @tags = []
   end
 
   def add_event_from_input
