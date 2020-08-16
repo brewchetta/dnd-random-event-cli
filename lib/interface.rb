@@ -16,8 +16,7 @@ class CLI
     puts "3. Add an event"
     puts "4. Edit an event"
     puts "5. Exit"
-    print ">>> "
-    @input = gets.chomp.strip.downcase
+    get_input
     execute_input
   end
 
@@ -26,30 +25,64 @@ class CLI
     when "1"
       random_event
     when "2"
-      puts "Building the menu for #{@input}"
+      random_event_by_tag
     when "3"
       puts "Building the menu for #{@input}"
     when "4"
       puts "Building the menu for #{@input}"
     when "5", "exit"
-      puts "Goodbye!"
-      exit
+      exit_program
     end
   end
 
   def display_event(event)
+    begin
+      new_line
+      puts event.title
+      puts event.description
+      puts "Rarity: #{event.rarity}"
+      puts "Tags: #{event.tags.map(&:name).join(", ")}"
+      new_line
+    rescue
+      new_line
+      puts "Could not find an event"
+      new_line
+    end
+  end
+
+  def random_event
     clear
-    puts event.title
-    puts event.description
-    puts event.rarity
-    puts event.tags.map(&:name)
-    puts "\n"
+    display_event(Event.all.sample)
     wait
     clear
   end
 
-  def random_event
-     display_event(Event.all.sample)
+  def random_event_by_tag
+    clear
+    while @input != "back"
+      puts "What tag would you like to search? \nType 'list' to get a list of tag names\nType 'back' to return or 'exit' to quit the program"
+      get_input
+      tag = Tag.find_by(name: @input)
+      case
+      when tag
+        display_event(tag.events.sample)
+        wait
+        clear
+      when @input == "list"
+        puts "List of tags:"
+        puts Tag.all.map { |tag| "#{tag.name} - #{tag.events.length} events"}
+        new_line
+        wait
+        clear
+      when @input == 'back'
+        wait
+        clear
+      when @input == 'exit'
+        exit_program
+      else
+        puts "Invalid input"
+      end
+    end
   end
 
   private
@@ -61,6 +94,21 @@ class CLI
 
   def clear
     system("clear")
+  end
+
+  def new_line
+    puts "\n"
+  end
+
+  def exit_program
+    puts "Goodbye!"
+    exit
+  end
+
+  def get_input
+    new_line
+    print ">>> "
+    @input = gets.chomp.strip.downcase
   end
 
 end
