@@ -33,6 +33,8 @@ end
 
 desc "Make run file executable, sets up databases"
 task :install do
+  puts "Installing gems..."
+  system("bundle install")
   puts "Making run file executable..."
   system("chmod +x bin/run")
   puts "Creating and migrating database..."
