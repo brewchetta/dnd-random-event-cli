@@ -42,6 +42,7 @@ class CLI
     puts event.title
     puts event.description
     puts event.rarity
+    puts event.tags.map(&:name)
     puts "\n"
     wait
     clear
