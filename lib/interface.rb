@@ -128,6 +128,7 @@ class CLI
   end
 
   def add_event_from_input
+    # TODO: Make rarity relevant and allow for input
     @event[:rarity] = 1
     new_event = Event.create(@event)
     @tags.each do |tag_name|
@@ -168,6 +169,7 @@ class CLI
   end
 
   def edit_event_from_attributes
+    # TODO: Make rarity relevant and selectable
     @found_event.title = @event[:title] if @event[:title]
     @found_event.description = @event[:description] if @event[:description]
     @found_event.save
