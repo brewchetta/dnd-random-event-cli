@@ -29,7 +29,7 @@ class CLI
     when "3"
       add_event_menu
     when "4"
-      puts "Building the menu for #{@input}"
+      edit_event_menu
     when "5", "exit"
       exit_program
     end
@@ -93,7 +93,9 @@ class CLI
   # --- Option 3 - Add Event --- #
 
   def add_event_menu
-    add_event_get_attributes
+    clear
+    puts "Looks like you'd like to add an event! Let's get started..."
+    add_event_attributes
     if @event[:title].length > 0 && @event[:description].length > 0
       add_event_from_input
     else
@@ -101,15 +103,13 @@ class CLI
       puts "Sorry, that didn't quite work..."
       wait_and_clear
     end
-    @input = ""
-    @tags = []
-    @event = {}
+    clear_inputs
   end
 
-  def add_event_get_attributes
+  def add_event_attributes
     @event = {}
     clear
-    puts "Let's create an event! What would you like to title it?"
+    puts "What would you like to title it?"
     get_unaltered_input
     @event[:title] = @input
     new_line
@@ -117,10 +117,10 @@ class CLI
     get_unaltered_input
     @event[:description] = @input
     new_line
-    add_event_get_tags
+    add_event_tags
   end
 
-  def add_event_get_tags
+  def add_event_tags
     puts "What tags would you like to include?"
     get_input
     @tags = @input.split(/[ ||, ]/).reject(&:empty?)
@@ -144,6 +144,46 @@ class CLI
   end
 
   # --- Option 4 - Edit Event --- #
+
+  def edit_event_menu
+    clear
+    puts "Looks like you'd like to edit an event! Let's get started..."
+    while @input.downcase.chomp != 'back'
+      puts "Type the event name that you'd like to see (case sensitive)\n'list' to see the event titles\n'back' to return to the main menu"
+      get_unaltered_input
+      if @input.downcase.chomp == 'list'
+        clear
+        list_events
+      elsif @found_event = Event.find_by(title: @input.chomp)
+        clear
+        puts "Great! Let's start editing #{@found_event.title}! \nLeave anything blank that you'd like not to change..."
+        add_event_attributes
+        edit_event_from_attributes
+      elsif @input.downcase.chomp != 'back'
+        puts "Sorry, I didn't quite catch that..."
+      end
+    end
+    clear
+  end
+
+  def edit_event_from_attributes
+    @found_event.update(@event)
+    if @tags.length > 0
+      @found_event.event_tags.each(&:destroy)
+      @tags.each do |tag_name|
+        if found_tag = Tag.find_by(name: tag_name)
+          @found_event.tags << found_tag
+        elsif !tag_name.empty?
+          @found_event.tags << Tag.create(name: tag_name)
+        end
+      end
+    end
+    new_line
+    puts "Your edited event:"
+    display_event(@found_event)
+    clear_inputs
+    wait_and_clear
+  end
 
   # --- Private Methods --- #
 
@@ -182,6 +222,17 @@ class CLI
     new_line
     print ">>> "
     @input = gets
+  end
+
+  def clear_inputs
+    @input = ""
+    @tags = []
+    @event = {}
+    @found_event = nil
+  end
+
+  def list_events
+    puts Event.all.map(&:title)
   end
 
 end
