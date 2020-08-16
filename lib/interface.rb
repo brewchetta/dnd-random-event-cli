@@ -3,7 +3,7 @@ class CLI
   def run
     @input = ""
     clear
-    puts "Welcome to the D&D random events app!"
+    center "Welcome to the D&D random events app!\n\n"
     while @input != "5" && @input != "exit"
       main_menu
     end
@@ -111,11 +111,11 @@ class CLI
     clear
     puts "What would you like to title it?"
     get_unaltered_input
-    @event[:title] = @input
+    @event[:title] = @input unless @input.empty?
     new_line
     puts "Write a description for the event"
     get_unaltered_input
-    @event[:description] = @input
+    @event[:description] = @input unless @input.empty?
     new_line
     add_event_tags
   end
@@ -151,15 +151,16 @@ class CLI
     while @input.downcase.chomp != 'back'
       puts "Type the event name that you'd like to see (case sensitive)\n'list' to see the event titles\n'back' to return to the main menu"
       get_unaltered_input
-      if @input.downcase.chomp == 'list'
+      if @input.downcase == 'list'
         clear
         list_events
-      elsif @found_event = Event.find_by(title: @input.chomp)
+      elsif @found_event = Event.find_by(title: @input)
         clear
         puts "Great! Let's start editing #{@found_event.title}! \nLeave anything blank that you'd like not to change..."
         add_event_attributes
         edit_event_from_attributes
-      elsif @input.downcase.chomp != 'back'
+      elsif @input.downcase != 'back'
+        binding.pry
         puts "Sorry, I didn't quite catch that..."
       end
     end
@@ -167,7 +168,10 @@ class CLI
   end
 
   def edit_event_from_attributes
-    @found_event.update(@event)
+    @found_event.title = @event[:title] if @event[:title]
+    @found_event.description = @event[:description] if @event[:description]
+    @found_event.save
+    binding.pry
     if @tags.length > 0
       @found_event.event_tags.each(&:destroy)
       @tags.each do |tag_name|
@@ -195,7 +199,8 @@ class CLI
   end
 
   def clear
-    system("clear")
+    system "clear"
+    center "☙ ❦ "
   end
 
   def wait_and_clear
@@ -214,14 +219,14 @@ class CLI
 
   def get_input
     new_line
-    print ">>> "
+    print "❦ "
     @input = gets.chomp.strip.downcase
   end
 
   def get_unaltered_input
     new_line
-    print ">>> "
-    @input = gets
+    print "❦ "
+    @input = gets.chomp
   end
 
   def clear_inputs
@@ -233,6 +238,19 @@ class CLI
 
   def list_events
     puts Event.all.map(&:title)
+  end
+
+  def center(input)
+    if input.length < term_width
+      (term_width / 2 - input.length / 2).times { print " " }
+      puts input
+    else
+      puts input
+    end
+  end
+
+  def term_width
+    IO.console.winsize[1]
   end
 
 end

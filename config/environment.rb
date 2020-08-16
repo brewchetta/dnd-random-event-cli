@@ -3,6 +3,7 @@ require 'active_record'
 require 'yaml/store'
 require 'ostruct'
 require 'date'
+require 'io/console'
 
 require "bundler/setup"
 Bundler.require
