@@ -10,9 +10,9 @@ end
 
 puts "Removing all entries..."
 
-EventTags.destroy_all
-Events.destroy_all
-Tags.destroy_all
+EventTag.destroy_all
+Event.destroy_all
+Tag.destroy_all
 
 puts "Creating tags..."
 
@@ -27,7 +27,7 @@ Tag.create(name: "elemental")
 puts "Creating events..."
 
 10.times do |i|
-  create_event(i + 1) << Tag.all.sample
+  create_event(i + 1).tags << Tag.all.sample
 end
 
 puts "Events created..."
