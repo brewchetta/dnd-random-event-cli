@@ -16,7 +16,7 @@ Tag.destroy_all
 
 puts "Creating tags..."
 
-Tag.create(name: "fight")
+Tag.create(name: "skirmish")
 Tag.create(name: "traveler")
 Tag.create(name: "sylvan")
 Tag.create(name: "mysterious")
