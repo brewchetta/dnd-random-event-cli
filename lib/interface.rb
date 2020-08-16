@@ -50,12 +50,16 @@ class CLI
     end
   end
 
+  # --- Option 1 - Random Event --- #
+
   def random_event
     clear
     display_event(Event.all.sample)
     wait
     clear
   end
+
+  # --- Option 2 - Random Event By Tag --- #
 
   def random_event_by_tag
     clear
@@ -84,6 +88,8 @@ class CLI
       end
     end
   end
+
+  # --- Private Methods --- #
 
   private
 
