@@ -2,9 +2,13 @@
 
 Terminal version of a random event database for D&D. Gives the ability to add and edit random events as well as get random events based on tags.
 
+Version 0.1.3
+
 ## Installation
 
-Run `rake install` in the app's directory in your terminal.
+Requires sqlite3 be installed as well as Ruby 2.6.1 or later.
+
+Run `bundle install && rake install` in the app's directory in your terminal.
 
 ## Use
 
@@ -15,3 +19,7 @@ To open the app use `rake run` in the app's directory in your terminal. You'll b
 - You can edit an event in the database
 
 Events must have a unique name. When adding tags, you can include multiple tags with a space or comma between each of them.
+
+## Issues
+
+Feel free to contribute with issues here: https://github.com/brewchetta/dnd-random-event-cli/issues
