@@ -2,13 +2,18 @@
 
 Terminal version of a random event database for D&D. Gives the ability to add and edit random events as well as get random events based on tags.
 
-Version 0.1.3
+Version 0.1.4
 
 ## Installation
 
-Requires sqlite3 be installed as well as Ruby 2.6.1 or later.
+Requires Mac or Linux
+Requires Sqlite3, Bundler, and Ruby 2.6.1 or later
 
 Run `bundle install && rake install` in the app's directory in your terminal.
+
+## Updating
+
+If you've previously installed the app you can update it with the `rake update` command.
 
 ## Use
 

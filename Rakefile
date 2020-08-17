@@ -33,8 +33,8 @@ end
 
 desc "Make run file executable, sets up databases"
 task :install do
-  puts "Installing gems..."
-  system("bundle install")
+  puts "Getting most recent version"
+  system("git pull")
   puts "Making run file executable..."
   system("chmod +x bin/run")
   puts "Creating and migrating database..."
@@ -43,6 +43,23 @@ task :install do
   puts "Seeding database..."
   system("rake db:seed")
   puts ("Installation Complete")
+end
+
+desc "Gets the most recent version from github"
+task :update do
+  puts "Getting most recent version"
+  system("git pull")
+  puts "Making run file executable..."
+  system("chmod +x bin/run")
+  puts "Checking for pre-existing data..."
+  unless system("ls db/development.sqlite3")
+    puts "Creating and migrating database..."
+    system("rake db:create")
+    system("rake db:migrate")
+    puts "Seeding database..."
+    system("rake db:seed")
+  end
+  puts ("Update Complete")
 end
 
 desc "Runs the program"
