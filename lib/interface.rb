@@ -1,10 +1,11 @@
 class CLI
 
   def run
+    @rainbow = Lolize::Colorizer.new
     @input = ""
     clear
-    center "Welcome to the D&D random events app!\n\n"
     while @input != "5" && @input != "exit"
+      center "Welcome to the D&D random events generator!\n\n"
       main_menu
     end
   end
@@ -38,14 +39,17 @@ class CLI
   def display_event(event)
     begin
       new_line
-      puts event.title
-      puts event.description
-      puts "Rarity: #{event.rarity}"
-      puts "Tags: #{event.tags.map(&:name).join(", ")}"
+      @rainbow.write event.title
+      new_line
+      @rainbow.write event.description
+      new_line
+      @rainbow.write "Rarity: #{event.rarity}"
+      new_line
+      @rainbow.write "Tags: #{event.tags.map(&:name).join(", ")}"
       new_line
     rescue
       new_line
-      puts "Could not find an event"
+      @rainbow.write "Could not find an event"
       new_line
     end
   end
@@ -54,6 +58,8 @@ class CLI
 
   def random_event
     clear
+    center "Random Event"
+    new_line
     display_event(Event.all.sample)
     wait_and_clear
   end
@@ -63,6 +69,8 @@ class CLI
   def random_event_by_tag_menu
     clear
     while @input != "back"
+      center "Random Event By Tag"
+      new_line
       puts "What tag would you like to search? \nType 'list' to get a list of tag names\nType 'back' to return or 'exit' to quit the program"
       get_input
       tag = Tag.find_by(name: @input)
@@ -73,7 +81,7 @@ class CLI
       when @input == "list"
         list_tags(tag)
       when @input == 'back'
-        wait_and_clear
+        clear
       when @input == 'exit'
         exit_program
       else
@@ -94,6 +102,8 @@ class CLI
 
   def add_event_menu
     clear
+    center "Add Event"
+    new_line
     puts "Looks like you'd like to add an event! Let's get started..."
     add_event_attributes
     if @event[:title].length > 0 && @event[:description].length > 0
@@ -108,7 +118,6 @@ class CLI
 
   def add_event_attributes
     @event = {}
-    clear
     puts "What would you like to title it?"
     get_unaltered_input
     @event[:title] = @input unless @input.empty?
@@ -148,8 +157,10 @@ class CLI
 
   def edit_event_menu
     clear
-    puts "Looks like you'd like to edit an event! Let's get started..."
     while @input.downcase.chomp != 'back'
+      center "Edit Event"
+      new_line
+      puts "Looks like you'd like to edit an event! Let's get started..."
       puts "Type the event name that you'd like to see (case sensitive)\n'list' to see the event titles\n'back' to return to the main menu"
       get_unaltered_input
       if @input.downcase == 'list'
@@ -158,6 +169,8 @@ class CLI
       elsif @found_event = Event.find_by(title: @input)
         clear
         puts "Great! Let's start editing #{@found_event.title}! \nLeave anything blank that you'd like not to change..."
+        display_event(@found_event)
+        new_line
         add_event_attributes
         edit_event_from_attributes
       elsif @input.downcase != 'back'
@@ -173,7 +186,6 @@ class CLI
     @found_event.title = @event[:title] if @event[:title]
     @found_event.description = @event[:description] if @event[:description]
     @found_event.save
-    binding.pry
     if @tags.length > 0
       @found_event.event_tags.each(&:destroy)
       @tags.each do |tag_name|
@@ -203,6 +215,7 @@ class CLI
   def clear
     system "clear"
     center "☙ ❦ "
+    puts "\n"
   end
 
   def wait_and_clear
@@ -221,13 +234,13 @@ class CLI
 
   def get_input
     new_line
-    print "❦ "
+    @rainbow.write "❦ "
     @input = gets.chomp.strip.downcase
   end
 
   def get_unaltered_input
     new_line
-    print "❦ "
+    @rainbow.write "❦ "
     @input = gets.chomp
   end
 
@@ -245,9 +258,9 @@ class CLI
   def center(input)
     if input.length < term_width
       (term_width / 2 - input.length / 2).times { print " " }
-      puts input
+      @rainbow.write input
     else
-      puts input
+      @rainbow.write input
     end
   end
 
