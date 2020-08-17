@@ -616,4 +616,5 @@ events.each do |event|
     e.tags << Tag.find_or_create_by(name: tag)
   end
   rainbow.write "Created #{e.title}..."
+  puts "\n"
 end

@@ -234,13 +234,13 @@ class CLI
 
   def get_input
     new_line
-    @rainbow.write "❦ "
+    @rainbow.write "❦  "
     @input = gets.chomp.strip.downcase
   end
 
   def get_unaltered_input
     new_line
-    @rainbow.write "❦ "
+    @rainbow.write "❦  "
     @input = gets.chomp
   end
 
